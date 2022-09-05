@@ -1,19 +1,41 @@
 package udea.edu.co.caja.caja.Entidades;
 
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
 import java.time.LocalDate;
+import javax.validation.constraints.NotNull;
 
-
+@Entity
+@Table(name="Employee")
 public class Employee {
-
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private long id;
+
+  @NotNull(message="Debe ingresar un email")
+  @Column (name="email",length=30,unique = true,nullable = false)
   private String email;
-  private Profile profile;
+
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn (name="id")
+    private Profile profile;
+
+
+    @NotNull(message="El Rol de Empleado solo puede ser Admin o Operario")
+  @Column(name="role")
   private Enum_RoleName  role;
+
+  @Column(name="dateupdateAt")
   private LocalDate dateupdateAt;
+  @Column(name="createdAT")
   private LocalDate createdAT;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  private Enterprise enterprise;
+ // Constructor VAcio en JPA  JAVA PERSISTENCE API
+  public Employee(){
+
+  }
   public Employee(long id, String email,   LocalDate dateupdateAt, LocalDate createdAT) {
     this.id = id;
     this.email = email;

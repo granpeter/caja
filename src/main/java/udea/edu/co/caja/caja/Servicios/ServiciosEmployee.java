@@ -1,16 +1,18 @@
 package udea.edu.co.caja.caja.Servicios;
 
+import org.springframework.stereotype.Service;
 import udea.edu.co.caja.caja.Entidades.Employee;
 import udea.edu.co.caja.caja.Entidades.Profile;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+@Service
 public class ServiciosEmployee {
     private ArrayList listaEmpleados = this.listEmployee();
     public ArrayList <Employee > listEmployee (){
 
-     Profile  perfil=new Profile("2", "Administrador","312443443", LocalDate.of(2022,06,07), LocalDate.of(2022,06,07));
+     Profile  perfil=new Profile(2, "Administrador","312443443", LocalDate.of(2022,06,07), LocalDate.of(2022,06,07));
 
        setListaEmpleados(new ArrayList<Employee>());
         Employee empleado1 = new Employee(1,"empleado1@gmail.com",LocalDate.of(2022,07,01),LocalDate.of(2022,07,6));

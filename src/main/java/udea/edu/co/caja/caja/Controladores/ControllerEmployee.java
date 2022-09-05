@@ -19,8 +19,9 @@ public class ControllerEmployee {
 
    ServiciosEmployee serviciosEmployee;
 
-    ControllerEmployee (){
-        this.serviciosEmployee=new ServiciosEmployee();
+    ControllerEmployee (ServiciosEmployee serviciosEmployee){
+
+        this.serviciosEmployee=serviciosEmployee;
     }
 
     @GetMapping(value="/list")

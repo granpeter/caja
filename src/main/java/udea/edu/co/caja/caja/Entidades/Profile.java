@@ -1,21 +1,37 @@
 package udea.edu.co.caja.caja.Entidades;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
-
+@Entity
+@Table(name="Profile")
 public class Profile {
-
-    private String id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+    @Column(name="image")
     private String image ;
+
+    @Column(name="phone",nullable = false)
     private String phone;
+    @Column(name="createdAt")
     private LocalDate createdAt;
+    @Column(name="updateAt")
     private  LocalDate updateAt;
 
-    public Profile(String id, String image, String phone, LocalDate createdAt, LocalDate updateAt) {
+    @OneToOne(mappedBy = "profile")
+    @JoinColumn(name = "IdEmployee", updatable = true, nullable = true)
+    private Employee employee;
+
+    @Column (name="sexo")
+    private String sexo;
+
+    public Profile (){
+
+    }
+
+    public Profile(long id, String image, String phone, LocalDate createdAt, LocalDate updateAt) {
         this.id = id;
         this.image = image;
         this.phone = phone;
@@ -24,11 +40,11 @@ public class Profile {
     }
 
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 
