@@ -1,0 +1,30 @@
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head th:replace="capas/encabezado :: encabezado">
+</head>
+<body>
+      <h2 align="center">Sistema de Gestión de Ingresos y Egresos</h2>
+     <!--cuerpo de la pagina -->
+     <!-- javascript de Bootstrap -->
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+
+
+      <div class="container-fluid">
+          <div class="row">
+              <div class="col-lg-4" >
+                 <!-- menu derecho -->
+                 <nav th:replace="capas/menuderecho:: menuderecho"></nav>
+              </div>
+
+              <div class="col-lg-4" >
+                <!-- la parte principal o contenido del aplicativo o interna-->
+                <main layout:fragment="contenido" role="main" class="container"></main>
+              </div>
+          </div>
+      </div>
+
+
+
+      <!-- Pie de PAgina-->
+     <footer th:replace="capas/pie :: pie"></footer>
+</body>
+</html>

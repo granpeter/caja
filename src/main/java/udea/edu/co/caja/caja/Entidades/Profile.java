@@ -20,8 +20,7 @@ public class Profile {
     @Column(name="updateAt")
     private  LocalDate updateAt;
 
-    @OneToOne(mappedBy = "profile")
-    @JoinColumn(name = "IdEmployee", updatable = true, nullable = true)
+    @OneToOne(mappedBy="profile")
     private Employee employee;
 
     @Column (name="sexo")

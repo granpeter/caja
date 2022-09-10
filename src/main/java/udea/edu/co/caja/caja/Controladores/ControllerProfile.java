@@ -2,6 +2,7 @@ package udea.edu.co.caja.caja.Controladores;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import udea.edu.co.caja.caja.Entidades.Profile;
 import udea.edu.co.caja.caja.Servicios.ServiciosProfile;
@@ -9,7 +10,7 @@ import udea.edu.co.caja.caja.Servicios.ServiciosProfile;
 import java.util.List;
 import java.util.Optional;
 
-@RestController
+@Controller
 @RequestMapping ("/profile")
 public class ControllerProfile {
 ServiciosProfile serviciosProfile;

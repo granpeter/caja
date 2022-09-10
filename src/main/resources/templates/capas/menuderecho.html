@@ -1,0 +1,32 @@
+<nav th:fragment="menuderecho" xmlns:th="http://www.w3.org/1999/xhtml">
+
+  <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px;">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+    <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+    <span class="fs-4">LOGO</span>
+  </a>
+    <hr>
+     <ul class="nav nav-pills flex-column mb-auto">
+    <li class="nav-item">
+      <a th:href="@{/ingresosyegresos/}" class="nav-link active">
+           Ingresos y Egresos
+      </a>
+    </li>
+    <h2>----------------------</h2>
+    <li class="nav-item">
+      <a th:href="@{/Employee/list}" class="nav-link active">
+         Usuarios
+      </a>
+    </li>
+    <h2>----------------------</h2>
+    <li class="nav-item">
+      <a th:href="@{/empresas/}" class="nav-link active">
+         Empresas
+      </a>
+    </li>
+    <h2>----------------------</h2>
+  </ul>
+     <hr>
+  </div>
+<!-- fin del menu derecho-->
+</nav>

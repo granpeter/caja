@@ -16,14 +16,19 @@ public class Employee {
   private String email;
 
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn (name="id")
+    @OneToOne
+    @JoinColumn(name="idProfile")
     private Profile profile;
 
 
     @NotNull(message="El Rol de Empleado solo puede ser Admin o Operario")
   @Column(name="role")
-  private Enum_RoleName  role;
+  @Enumerated (value=EnumType.STRING)
+    private Enum_RoleName  role;
+
+    @NotNull(message="Debe ingresar un nombre")
+  @Column (name="name")
+  private String name;
 
   @Column(name="dateupdateAt")
   private LocalDate dateupdateAt;
@@ -92,4 +97,20 @@ public class Employee {
   public void setCreatedAT(LocalDate createdAT) {
     this.createdAT = createdAT;
   }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Enterprise getEnterprise() {
+        return enterprise;
+    }
+
+    public void setEnterprise(Enterprise enterprise) {
+        this.enterprise = enterprise;
+    }
 }
