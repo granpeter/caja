@@ -1,22 +1,23 @@
 package udea.edu.co.caja.caja.Controladores;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 import udea.edu.co.caja.caja.Entidades.Enterprise;
+import udea.edu.co.caja.caja.Entidades.Enum_RoleName;
 import udea.edu.co.caja.caja.Entidades.Profile;
 import org.springframework.web.bind.annotation.*;
 import udea.edu.co.caja.caja.Entidades.Employee;
 import udea.edu.co.caja.caja.Servicios.ServiciosEmployee;
 import udea.edu.co.caja.caja.Servicios.ServiciosProfile;
-import udea.edu.co.caja.caja.Entidades.Enum_RoleName;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/Employee")
@@ -60,34 +61,59 @@ public class ControllerEmployee {
     @PostMapping(value="/guardar")
     public String guardar(@RequestParam("name") String name, @RequestParam("email")  String email,@RequestParam("role")  String role, @RequestParam("phone") String phone)
     {
-        // Crear objeto Profile y guardarlo
-        Profile profile= new Profile();
-        profile.setPhone(phone);
-        profile.setCreatedAt(LocalDate.now());
-        profile.setUpdateAt(LocalDate.now());
-        // guardo Objeto Profile
-        profile=serviciosProfile.guardar(profile);
+        serviciosEmployee.guardarEmpleadoPerfil(name,email,phone,role,this.serviciosProfile,this.serviciosEmployee);
+        return "redirect:/Employee/list";
+    }
 
-        // crear el Objeto Employee
-        Employee employee=new Employee();
-        //Asocio Profile recien creado con autonumerico ya asignado
-        employee.setProfile(profile);
+    @PostMapping(value="/delete")
+    public String eliminar (@ModelAttribute Employee employee){
+        // llamo  al Servicio para eliminar el empleado
+       serviciosEmployee.eliminar(employee.getId());
+        // refrescar la lista de empleados
+        return "redirect:/Employee/list";
+
+    }
+
+    @PostMapping(value="/update")
+    public String actualizar(@ModelAttribute @Valid Employee employee, BindingResult bindingResult, Model model)
+    {
+        Optional<Employee> employee1=serviciosEmployee.buscar(employee.getId());
+        // la busqueda de empleado puede o no traer un resultado;
+        if (employee1.isPresent()) { // si el objeto es diferente de null
+            employee = employee1.get();//Obtiene una Instancia PErmanente Objeto
+            model.addAttribute("employee",employee);
+            model.addAttribute("profile",employee.getProfile());
+            model.addAttribute("enterprise",employee.getEnterprise());
+        }// se obtiene la instancia
+        return "Employee/editar";
+    }
+
+
+
+    @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
+    public String actualizar(@DateTimeFormat (pattern="yyyy-MM-dd") @ModelAttribute("profile") Profile profile, @DateTimeFormat (pattern="yyyy-MM-dd") @ModelAttribute("employee")  Employee employee, @ModelAttribute("enterprise") Enterprise enterprise, @RequestParam("idProfile") Long idProfile , @RequestParam("idEnterprise") Long idEnterprise , @RequestParam("name") String name, @RequestParam("email")  String email, @RequestParam("role")  String role, @RequestParam("phone") String phone){
+
         employee.setName(name);
         employee.setEmail(email);
-        employee.setCreatedAT(LocalDate.now());
-        employee.setDateupdateAt(LocalDate.now());
-        Enterprise enterprise=new Enterprise();
-        enterprise.setId(1);
-        employee.setEnterprise(enterprise);
         if (role.equals("Admin")) {
             employee.setRole(Enum_RoleName.Admin);
         }else if (role.equals("Operario")){
             employee.setRole(Enum_RoleName.Operario);
         }
+        profile.setId(idProfile);
+        profile.setCreatedAt(LocalDate.now());
+        profile.setUpdateAt(LocalDate.now());
 
-       // guardar objeto Employee
-        serviciosEmployee.save(employee);
-        return "redirect:/Employee/listar";
+        // reeestablecer la enterprise
+        enterprise.setId(idEnterprise);
+
+        employee.setEnterprise(enterprise);
+        employee.setProfile(profile);
+        employee.getEnterprise().setId(idEnterprise);
+        this.serviciosEmployee.save(employee);
+        this.serviciosProfile.guardar(profile);
+        return "redirect:/Employee/list";
+
     }
 
 }

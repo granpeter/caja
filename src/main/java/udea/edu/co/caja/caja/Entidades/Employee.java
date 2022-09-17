@@ -24,7 +24,7 @@ public class Employee {
     @NotNull(message="El Rol de Empleado solo puede ser Admin o Operario")
   @Column(name="role")
   @Enumerated (value=EnumType.STRING)
-    private Enum_RoleName  role;
+  private Enum_RoleName  role;
 
     @NotNull(message="Debe ingresar un nombre")
   @Column (name="name")
