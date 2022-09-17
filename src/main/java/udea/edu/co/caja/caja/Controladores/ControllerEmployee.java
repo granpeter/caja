@@ -1,6 +1,9 @@
 package udea.edu.co.caja.caja.Controladores;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,7 +26,7 @@ import java.util.Optional;
 @RequestMapping("/Employee")
 public class ControllerEmployee {
    Profile perfil;
-
+  @Autowired
    ServiciosEmployee serviciosEmployee;
    ServiciosProfile  serviciosProfile;
 
@@ -31,10 +34,20 @@ public class ControllerEmployee {
 
         this.serviciosEmployee=serviciosEmployee;
         this.serviciosProfile=serviciosProfile;
-    }
 
+
+    }
+   public void refrescarModelo (Model model,@AuthenticationPrincipal OidcUser principal) {
+       if (principal!=null){
+           model.addAttribute("user", principal.getClaims());
+           System.out.println ("Info Usuario:"+principal.getClass())   ;
+       }
+
+   }
     @GetMapping(value="/list")
-    public String listEmployee(Model model){
+    public String listEmployee(Model model,@AuthenticationPrincipal OidcUser principal){
+
+         refrescarModelo(model,principal);
         // Consultando la lista de Empleados
         List<Employee> listEmployee=serviciosEmployee.listEmployee();
         // Estableciendo en el modelo la lista de empleados, para que el HTML La pueda visualizar
@@ -43,8 +56,10 @@ public class ControllerEmployee {
     }
 
     @GetMapping (value="/nuevo")
-    public String nuevo (){
-         return "Employee/nuevo";
+    public String nuevo (@AuthenticationPrincipal OidcUser principal,
+                         Model model){
+        refrescarModelo(model,principal);
+        return "Employee/nuevo";
     }
 
     /*
@@ -59,8 +74,14 @@ public class ControllerEmployee {
     }
 */
     @PostMapping(value="/guardar")
-    public String guardar(@RequestParam("name") String name, @RequestParam("email")  String email,@RequestParam("role")  String role, @RequestParam("phone") String phone)
+    public String guardar(@RequestParam("name") String name, @RequestParam("email")  String email,@RequestParam("role")  String role,
+                          @RequestParam("phone") String phone,
+                          @AuthenticationPrincipal OidcUser principal,
+                          Model model
+
+    )
     {
+        refrescarModelo(model,principal);
         serviciosEmployee.guardarEmpleadoPerfil(name,email,phone,role,this.serviciosProfile,this.serviciosEmployee);
         return "redirect:/Employee/list";
     }
@@ -75,8 +96,11 @@ public class ControllerEmployee {
     }
 
     @PostMapping(value="/update")
-    public String actualizar(@ModelAttribute @Valid Employee employee, BindingResult bindingResult, Model model)
+    public String actualizar(@ModelAttribute @Valid Employee employee, BindingResult bindingResult,
+                             @AuthenticationPrincipal OidcUser principal,
+                             Model model)
     {
+        refrescarModelo(model,principal);
         Optional<Employee> employee1=serviciosEmployee.buscar(employee.getId());
         // la busqueda de empleado puede o no traer un resultado;
         if (employee1.isPresent()) { // si el objeto es diferente de null
@@ -91,10 +115,20 @@ public class ControllerEmployee {
 
 
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
-    public String actualizar(@DateTimeFormat (pattern="yyyy-MM-dd") @ModelAttribute("profile") Profile profile, @DateTimeFormat (pattern="yyyy-MM-dd") @ModelAttribute("employee")  Employee employee, @ModelAttribute("enterprise") Enterprise enterprise, @RequestParam("idProfile") Long idProfile , @RequestParam("idEnterprise") Long idEnterprise , @RequestParam("name") String name, @RequestParam("email")  String email, @RequestParam("role")  String role, @RequestParam("phone") String phone){
+    public String actualizar(@ModelAttribute("profile") Profile profile,
+                             @DateTimeFormat (pattern="yyyy-mm-dd") @ModelAttribute("employee")  Employee employee,
+                             @DateTimeFormat (pattern="yyyy-mm-dd") @ModelAttribute("enterprise") Enterprise enterprise, @RequestParam("idProfile") Long idProfile , @RequestParam("idEnterprise") Long idEnterprise , @RequestParam("name") String name, @RequestParam("email")  String email,
+                             @RequestParam("role")  String role, @RequestParam("phone") String phone,
+                              @AuthenticationPrincipal OidcUser principal,
+                              Model model
+     )
 
+    {
+        refrescarModelo(model,principal);
         employee.setName(name);
         employee.setEmail(email);
+
+        employee.setDateupdateAt(LocalDate.now());
         if (role.equals("Admin")) {
             employee.setRole(Enum_RoleName.Admin);
         }else if (role.equals("Operario")){
