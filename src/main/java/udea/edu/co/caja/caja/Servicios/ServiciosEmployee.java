@@ -33,7 +33,7 @@ public class ServiciosEmployee {
          return employeeRepository.save(employee);
     }
 
-    public Employee guardarEmpleadoPerfil(String phone,String name, String email, String role ,ServiciosProfile  serviciosProfile,ServiciosEmployee serviciosEmployee){
+    public Employee guardarEmpleadoPerfil(String name,String email, String phone, String role ,ServiciosProfile  serviciosProfile,ServiciosEmployee serviciosEmployee){
 
         // Crear objeto Profile y guardarlo
         Profile profile= new Profile();
