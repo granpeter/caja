@@ -4,9 +4,11 @@
       layout:decorate="index">
 <body>
 
+
+
 <main layout:fragment="contenido">
 <!-- Formulario para guardar nuevo usuario -->
-<form  th:action="@{/Employee/guardar}" method="post">
+<form  th:action="@{/Employee/guardar}" method="post"  class="row g-3 needs-validation" novalidate>
     <div class="form-group"  >
         <h2>Nuevo Usuario</h2>
 
@@ -14,7 +16,11 @@
         <label for="name">Nombre</label>
         <input autocomplete="off" autofocus  id="name" name="name"
                placeholder="Escribe el nombre del usuario" type="text"
-               class="form-control" >
+               class="form-control"   required>
+
+          <div class="valid-feedback">
+              Se requiere ingresar nombre
+          </div>
       </div>
     <div>
         <label for="email">Correo</label>

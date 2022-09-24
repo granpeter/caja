@@ -1,6 +1,12 @@
 <html lang="es" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.w3.org/1999/xhtml">
 <head th:replace="capas/encabezado :: encabezado">
+
+   <script language="JavaScript">
+
+
+   </script>
+
 </head>
 <body>
       <h2 align="center">Sistema de Gestión de Ingresos y Egresos</h2>
@@ -13,14 +19,14 @@
           <a th:href="@{/oauth2/authorization/auth0}">Debe loguear para poder usar la aplicación de ingresos y egresos</a>
       </div>
 
-      <div sec:authorize="isAuthenticated()">
+      <div sec:authorize="isAuthenticated()" >
           <div class="container-fluid">
               <div class="row">
           <!-- Mostrar perfil del usuario y opciòn de cerrar Sesiòn-->
            <div class="row-lg-4" >
-              <img th:src="${user.get('picture')}" th:attr="alt=${user.get('name')}"/>
-              <h2 th:text="${user.get('name')}"></h2>
-              <p th:text="${user.get('email')}"></p>
+              <img th:src="${usuario.getPicture()}" th:attr="alt=${usuario.getName()}"/>
+              <h2 th:text="${usuario.getName()}"></h2>
+              <p th:text="${usuario.getEmail()}"></p>
               <a th:href="@{/logout}">Cerrar Sesión</a>
            </div>
 

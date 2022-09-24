@@ -9,13 +9,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
-import udea.edu.co.caja.caja.Entidades.Enterprise;
-import udea.edu.co.caja.caja.Entidades.Enum_RoleName;
-import udea.edu.co.caja.caja.Entidades.Profile;
+import udea.edu.co.caja.caja.Entidades.*;
 import org.springframework.web.bind.annotation.*;
-import udea.edu.co.caja.caja.Entidades.Employee;
 import udea.edu.co.caja.caja.Servicios.ServiciosEmployee;
 import udea.edu.co.caja.caja.Servicios.ServiciosProfile;
+import udea.edu.co.caja.caja.Servicios.UsersService;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -30,18 +28,20 @@ public class ControllerEmployee {
    ServiciosEmployee serviciosEmployee;
    ServiciosProfile  serviciosProfile;
 
-    public ControllerEmployee (ServiciosEmployee serviciosEmployee, ServiciosProfile serviciosProfile){
+   UsersService usersService;
 
+    public ControllerEmployee (ServiciosEmployee serviciosEmployee, ServiciosProfile serviciosProfile, UsersService usersService){
+          // inyeccion por dependencias en el constructor
         this.serviciosEmployee=serviciosEmployee;
         this.serviciosProfile=serviciosProfile;
+        this.usersService=  usersService;
 
 
     }
    public void refrescarModelo (Model model,@AuthenticationPrincipal OidcUser principal) {
-       if (principal!=null){
-           model.addAttribute("user", principal.getClaims());
-           System.out.println ("Info Usuario:"+principal.getClass())   ;
-       }
+       Users user = usersService.findCreateUsuarios(principal.getClaims());
+       //establezco en la session el objeto usuario permanentemente
+       model.addAttribute("usuario",user);
 
    }
     @GetMapping(value="/list")
@@ -56,8 +56,7 @@ public class ControllerEmployee {
     }
 
     @GetMapping (value="/nuevo")
-    public String nuevo (@AuthenticationPrincipal OidcUser principal,
-                         Model model){
+    public String nuevo ( Model model,@AuthenticationPrincipal OidcUser principal ){
         refrescarModelo(model,principal);
         return "Employee/nuevo";
     }
@@ -76,13 +75,12 @@ public class ControllerEmployee {
     @PostMapping(value="/guardar")
     public String guardar(@RequestParam("name") String name, @RequestParam("email")  String email,@RequestParam("role")  String role,
                           @RequestParam("phone") String phone,
-                          @AuthenticationPrincipal OidcUser principal,
-                          Model model
+                          Model model,@AuthenticationPrincipal OidcUser principal
 
     )
     {
-        refrescarModelo(model,principal);
         serviciosEmployee.guardarEmpleadoPerfil(name,email,phone,role,this.serviciosProfile,this.serviciosEmployee);
+        refrescarModelo(model,principal);
         return "redirect:/Employee/list";
     }
 
@@ -97,8 +95,7 @@ public class ControllerEmployee {
 
     @PostMapping(value="/update")
     public String actualizar(@ModelAttribute @Valid Employee employee, BindingResult bindingResult,
-                             @AuthenticationPrincipal OidcUser principal,
-                             Model model)
+                             Model model,@AuthenticationPrincipal OidcUser principal )
     {
         refrescarModelo(model,principal);
         Optional<Employee> employee1=serviciosEmployee.buscar(employee.getId());
@@ -119,13 +116,11 @@ public class ControllerEmployee {
                              @DateTimeFormat (pattern="yyyy-mm-dd") @ModelAttribute("employee")  Employee employee,
                              @DateTimeFormat (pattern="yyyy-mm-dd") @ModelAttribute("enterprise") Enterprise enterprise, @RequestParam("idProfile") Long idProfile , @RequestParam("idEnterprise") Long idEnterprise , @RequestParam("name") String name, @RequestParam("email")  String email,
                              @RequestParam("role")  String role, @RequestParam("phone") String phone,
-                              @AuthenticationPrincipal OidcUser principal,
-                              Model model
+                             Model model
      )
 
     {
-        refrescarModelo(model,principal);
-        employee.setName(name);
+         employee.setName(name);
         employee.setEmail(email);
 
         employee.setDateupdateAt(LocalDate.now());
