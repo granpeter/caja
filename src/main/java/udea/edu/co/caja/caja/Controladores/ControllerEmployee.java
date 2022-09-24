@@ -52,7 +52,7 @@ public class ControllerEmployee {
         List<Employee> listEmployee=serviciosEmployee.listEmployee();
         // Estableciendo en el modelo la lista de empleados, para que el HTML La pueda visualizar
         model.addAttribute("listEmployee",listEmployee);
-        return "/Employee/listar";
+        return "Employee/listar";
     }
 
     @GetMapping (value="/nuevo")
